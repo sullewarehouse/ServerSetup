@@ -1,5 +1,5 @@
 # Linux Server Setup
-ODROID [Ubuntu, Fedora] login credentials
+ODROID [Ubuntu, Fedora] login credentials  
 This list may not be 100% accurate depending on your OS image
 
 | UserName | Password |
@@ -29,13 +29,13 @@ speedtest-cli --secure
 
 Install Webmin
 ```
-sudo apt install curl
-sudo curl -o setup-repos.sh https://raw.githubusercontent.com/webmin/webmin/master/setup-repos.sh
+apt install curl
+curl -o setup-repos.sh https://raw.githubusercontent.com/webmin/webmin/master/setup-repos.sh
 sh setup-repos.sh
-sudo apt-get install webmin
+apt-get install webmin
 ```
 
-You can now access Webmin at https://ip-address:10000/  
+You can now access Webmin at `https://ip-address:10000/`  
 Default login:
 | UserName | Password |
 | -------- | -------- |
@@ -43,9 +43,10 @@ Default login:
 
 You can change the password for a user by going to `System->Change Passwords` in the left panel
 
-To set a desired Hostname, the option can be found by going to `Networking->Network Configuration` in the left panel, then select `Hostname and DNS Client`
+To set a desired Hostname, the option can be found by going to `Networking->Network Configuration` then select `Hostname and DNS Client`
 
-You can set a static IP and edit the network by going to `Networking->Network Configuration` in the left panel, then select `Network Interfaces`
+You can set a static IP and edit the network by going to `Networking->Network Configuration` then select `Network Interfaces`
+
 If you get locked out of accessing Webmin because of a misconfigured ip address, you can use the following steps to configure your network interface to use DHCP using the `ip` command:
 ```
 ip link set eth0 down
