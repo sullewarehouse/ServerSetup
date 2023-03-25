@@ -55,11 +55,13 @@ ip link set eth0 up
 ip addr show eth0
 ```
 
-In the left Webmin panel, under Un-used Modules, you can install the desired modules  
+In the left Webmin panel, under `Un-used Modules`, you can install the desired modules  
 Some recommended modules are:
 - Apache Webserver
 - MySQL Database Server
 - Postfix Mail Server
+
+After installing your modules you should click on `Refresh Modules` in the left panel, this will move the modules you installed into the `Servers` category in the left panel. Then finally reboot the system. You should do this whenever you install a new module.
 
 # PHP Installation
 PHP is available in Ubuntu Linux. Unlike Python, which is installed in the base system, PHP must be added.
@@ -88,6 +90,8 @@ Similarly, to use PostgreSQL with PHP you should install the php-pgsql package:
 ```
 apt install php-pgsql
 ```
+
+Recommemded to refresh Webmin modules and reboot after PHP Installation.
 
 # Next
 - [Apache Setup](Apache-Setup.md)
