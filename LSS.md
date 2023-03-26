@@ -16,7 +16,7 @@ apt install openssh-server
 reboot
 ```
 
-You can now use a terminal on another system to connect to the server via SSH
+You can now use a terminal on another system to connect to the server via SSH  
 Use the command `hostname -I` to get your servers IP address
 ```
 ssh [username]@[ip-address]
