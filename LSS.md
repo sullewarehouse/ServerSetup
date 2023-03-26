@@ -20,6 +20,7 @@ You can now use a terminal on another system to connect to the server via SSH
 ```
 ssh [username]@[ip-address]
 ```
+You can use the command `hostname -I` to get your servers IP address
 
 Install speedtest and test server connection speed
 ```
