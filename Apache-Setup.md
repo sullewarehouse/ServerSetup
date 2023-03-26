@@ -9,7 +9,7 @@ Add `Hello World` to the file and click on the save icon
 ![Alt Text](images/apache/2.png)
 
 ### Enable SSL
-Before you create a any Virtual Host's you should enable the SSL module for Apache  
+Before you create any Virtual Host's you should enable the SSL module for Apache  
 You can use the command `a2enmod ssl` in the terminal to enable it  
 Restart Apache using the `systemctl restart Apache2` command
 
@@ -75,7 +75,7 @@ You should now have a secure connection
 Make sure your site visitors are on a secure connection (port 443) using URL redirect  
 Goto `Servers->Apache Webserver` and click on your virtual host for port 80  
 Click on `Aliases and Redirects`  
-Under `URL redirects`, set `From` to `/` and set `To` to `https://WebSitenName.com  
+Under `URL redirects`, set `From` to `/` and set `To` to `https://WebSitenName.com`  
 Click on `Save`
 
 **Click Apply changes in the top right corner**
