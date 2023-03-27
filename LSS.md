@@ -61,6 +61,7 @@ Some recommended modules are:
 - Apache Webserver
 - MySQL Database Server
 - Postfix Mail Server
+- ProFTPD
 
 After installing your modules you should click on `Refresh Modules` in the left panel, this will move the modules you installed into the `Servers` category in the left panel. Then finally reboot the system. You should do this whenever you install a new module.
 

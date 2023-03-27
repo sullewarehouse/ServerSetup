@@ -55,8 +55,8 @@ Walkthrough setting up a Linux or Windows server
 
 - [Notepad++](https://notepad-plus-plus.org)
 - [Sublime Text](https://sublimetext.com)
-- [Vim](https://github.com/vim)
 - [Visual Studio Code](https://code.visualstudio.com)
+- [Vim](https://github.com/vim)
 
 # Icons and Animations
 
