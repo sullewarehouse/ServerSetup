@@ -5,6 +5,9 @@ Walkthrough setting up a Linux or Windows server
   - [Apache Setup](Apache-Setup.md)
   - Postfix Mail Server Setup (coming soon)
 
+Tutorials and Walkthroughs are for educational purposes only  
+SULLE WAREHOUSE and Authors can't be held accountable for any damages done
+
 # Website Builders
 
 ### Web Interface
@@ -50,13 +53,22 @@ Walkthrough setting up a Linux or Windows server
 ### Web Interface
 
 - [CODEPEN](https://codepen.io)
+- [Liveweave](https://liveweave.com)
+- [Codeply](https://codeply.com)
+- [JSFiddle](https://jsfiddle.net)
+- [CSSDeck](https://cssdeck.com)
+- [JS Bin](https://jsbin.com)
+- [JS.do](JS.do)
+- [PlayCode](https://playcode.io)
 
 ### Desktop Interface
 
+- [Kate](https://kate-editor.org)
 - [Notepad++](https://notepad-plus-plus.org)
+- [Notepadqq](https://notepadqq.com)
+- [SciTE](https://scintilla.org/SciTEDownload.html)
 - [Sublime Text](https://sublimetext.com)
 - [Visual Studio Code](https://code.visualstudio.com)
-- [Vim](https://github.com/vim)
 
 # Icons and Animations
 

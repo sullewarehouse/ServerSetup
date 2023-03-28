@@ -1,4 +1,18 @@
 # Apache Webserver Setup
+### Introduction
+This is the 2nd part of the [Linux Server Setup](LSS.md) walkthrough  
+Previously we installed the following software:
+- OpenSSH
+- Webmin
+- Apache Webserver
+- MySQL Database Server
+- Postfix Mail Server
+- ProFTPD
+- PHP
+
+Now we will setup our Apache Webserver with SSL encryption  
+Start by logging into your Webmin interface at `https://ip-address:10000/`
+
 ### Create Site Directory
 Goto `Tools->File Manager` in the left panel  
 Navigate to `/var/www` and create a new directory for your site  

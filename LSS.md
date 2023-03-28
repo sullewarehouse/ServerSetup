@@ -1,4 +1,6 @@
 # Linux Server Setup
+In this walkthrough we will be using an ODROID with Ubuntu Minimal as our server, and using the terminal along with Webmin to install the different free software necessary to run our server.
+
 ODROID [Ubuntu, Fedora] login credentials  
 This list may not be 100% accurate depending on your OS image
 
