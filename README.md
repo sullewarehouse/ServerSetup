@@ -60,6 +60,7 @@ SULLE WAREHOUSE and Authors can't be held accountable for any damages done
 - [JS Bin](https://jsbin.com)
 - [JS.do](JS.do)
 - [PlayCode](https://playcode.io)
+- [CodeSandbox](https://codesandbox.io)
 
 ### Desktop Interface
 
@@ -67,8 +68,10 @@ SULLE WAREHOUSE and Authors can't be held accountable for any damages done
 - [Notepad++](https://notepad-plus-plus.org)
 - [Notepadqq](https://notepadqq.com)
 - [SciTE](https://scintilla.org/SciTEDownload.html)
-- [Sublime Text](https://sublimetext.com)
 - [Visual Studio Code](https://code.visualstudio.com)
+- [Sublime Text](https://sublimetext.com)
+- [Brackets](https://brackets.io)
+- [Gedit](https://wiki.gnome.org/Apps/Gedit)
 
 # Icons and Animations
 
