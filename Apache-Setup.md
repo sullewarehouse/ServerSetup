@@ -95,3 +95,21 @@ Click on `Save`
 **Click Apply changes in the top right corner**
 
 ![Alt Text](images/apache/7.png)
+
+### Enable PHP Execution
+You will need to run the following command to ensure that the Apache service has read and execute permissions for PHP
+```
+chmod -R 777 /var/www
+```
+
+If you don't do this you will likely get a blank page in your browser if you use a `index.php` file.
+
+Next we will enable PHP execution in HTML files  
+Click on the `Default Server` and open `MIME Types`  
+Add an extra MIME type, Type = `application/x-httpd-php`, Extensions = `.html`  
+Click on `Save`
+
+**Click Apply changes in the top right corner**
+
+![Alt Text](images/apache/8.png)
+
