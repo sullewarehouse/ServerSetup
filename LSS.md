@@ -95,6 +95,11 @@ Similarly, to use PostgreSQL with PHP you should install the php-pgsql package:
 apt install php-pgsql
 ```
 
+Install cURL for PHP, applications like stripe need this.
+```
+apt-get install php-curl
+```
+
 Recommemded to refresh Webmin modules and reboot after PHP Installation.
 
 # Next
