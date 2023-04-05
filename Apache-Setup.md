@@ -1,23 +1,47 @@
 # Apache Webserver Setup
 ### Introduction
-This is the 2nd part of the [Linux Server Setup](LSS.md) walkthrough  
+This is the 2nd part of the [Linux Server Setup](LSS.md) walkthrough.  
 Previously we installed the following software:
 - OpenSSH
 - Webmin
 - Apache Webserver
+- Dovecot IMAP/POP3 Server
 - MySQL Database Server
 - Postfix Mail Server
 - ProFTPD
 - PHP
 
-Now we will setup our Apache Webserver with SSL encryption  
-Start by logging into your Webmin interface at `https://ip-address:10000/`
+Now we will setup our Apache Webserver with PHP support and SSL encryption.
+
+### Enable PHP Read & Execute Permissions
+By default PHP runs as `www-data` user, we need to give that user read & execute permissions for the `/var/www` directory.  
+Start by logging into your server with SSH:
+```
+ssh root@ip-address
+```
+Create a new group that includes the `www-data` user:
+```
+groupadd net-group
+usermod -a -G net-group www-data
+```
+Change the group ownership of the `/var/www` directory and its subdirectories to the created group:
+```
+chown -R :net-group /var/www
+```
+Change the permissions of the `/var/www` directory and its subdirectories to allow group members to read and execute:
+```
+chmod -R 750 /var/www
+```
+`-R` means "recursive", `750` means read, write & execute for owner, read & execute for group, no permissions for others.
+
+If you don't do this you will likely get a blank page in your browser if you use `index.php` for a web page.
 
 ### Create Site Directory
+Start by logging into your Webmin interface at `https://ip-address:10000/`  
 Goto `Tools->File Manager` in the left panel  
 Navigate to `/var/www` and create a new directory for your site  
-Create a new file named `index.html`, this will be our website home page  
-Add `Hello World` to the file and click on the save icon
+Inside your new directory create a new file named `index.php`, this will be our website home page  
+Add `<?php phpinfo(); ?>` to the file and click on the save icon
 
 ![Alt Text](images/apache/1.png)
 ![Alt Text](images/apache/2.png)
@@ -96,15 +120,8 @@ Click on `Save`
 
 ![Alt Text](images/apache/7.png)
 
-### Enable PHP Execution
-You will need to run the following command to ensure that the Apache service has read and execute permissions for PHP
-```
-chmod -R 777 /var/www
-```
-
-If you don't do this you will likely get a blank page in your browser if you use a `index.php` file.
-
-Next we will enable PHP execution in HTML files  
+### Enable PHP in HTML
+Goto `Servers->Apache Webserver`  
 Click on the `Default Server` and open `MIME Types`  
 Add an extra MIME type, Type = `application/x-httpd-php`, Extensions = `.html`  
 Click on `Save`
@@ -113,3 +130,5 @@ Click on `Save`
 
 ![Alt Text](images/apache/8.png)
 
+# Next
+- [Postfix & Dovecot Setup](Postfix-Dovecot-Setup.md)

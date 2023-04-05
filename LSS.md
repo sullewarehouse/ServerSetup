@@ -30,12 +30,13 @@ apt install speedtest-cli
 speedtest-cli --secure
 ```
 
-Install Webmin
+Install cURL and Webmin
 ```
 apt install curl
 curl -o setup-repos.sh https://raw.githubusercontent.com/webmin/webmin/master/setup-repos.sh
 sh setup-repos.sh
 apt-get install webmin
+rm setup-repos.sh
 ```
 
 You can now access Webmin at `https://ip-address:10000/`  
@@ -59,8 +60,9 @@ ip addr show eth0
 ```
 
 In the left Webmin panel, under `Un-used Modules`, you can install the desired modules  
-Some recommended modules are:
+For this tutorial series we are installing the following:
 - Apache Webserver
+- Dovecot IMAP/POP3 Server
 - MySQL Database Server
 - Postfix Mail Server
 - ProFTPD
@@ -95,7 +97,7 @@ Similarly, to use PostgreSQL with PHP you should install the php-pgsql package:
 apt install php-pgsql
 ```
 
-Install cURL for PHP, applications like stripe need this.
+Install cURL for PHP, applications like stripe need this:
 ```
 apt-get install php-curl
 ```

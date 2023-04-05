@@ -3,7 +3,7 @@ Walkthrough setting up a Linux or Windows server
 
 - [Linux Server Setup](LSS.md)
   - [Apache Setup](Apache-Setup.md)
-  - Postfix Mail Server Setup (coming soon)
+  - [Postfix & Dovecot Setup](Postfix-Dovecot-Setup.md)
 
 Tutorials and Walkthroughs are for educational purposes only  
 SULLE WAREHOUSE and Authors can't be held accountable for any damages done
