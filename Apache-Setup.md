@@ -19,16 +19,16 @@ Start by logging into your server with SSH:
 ```
 ssh root@ip-address
 ```
-Create a new group that includes the `www-data` user:
+Create a new group named `net-group` with a GID of `5000` that includes the `www-data` user:
 ```
-groupadd net-group
+groupadd -g 5000 net-group
 usermod -a -G net-group www-data
 ```
 Change the group ownership of the `/var/www` directory and its subdirectories to the created group:
 ```
 chown -R :net-group /var/www
 ```
-Change the permissions of the `/var/www` directory and its subdirectories to allow group members to read and execute:
+Change the permissions of the `/var/www` directory and its subdirectories to allow group members to read & execute:
 ```
 chmod -R 750 /var/www
 ```

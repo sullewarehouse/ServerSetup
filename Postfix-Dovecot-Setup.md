@@ -1,13 +1,13 @@
 # Postfix & Dovecot Mail Server Setup
 ### Introduction
-This is the 3rd part of the [Linux Server Setup](LSS.md) walkthrough  
+This is the 3rd part of the [Linux Server Setup](LSS.md) walkthrough.  
 Previously we installed the following software:
 - OpenSSH
 - Webmin
 - Apache Webserver
+- Dovecot IMAP/POP3 Server
 - MySQL Database Server
 - Postfix Mail Server
-- Dovecot IMAP/POP3 Server
 - ProFTPD
 - PHP
 
@@ -18,7 +18,6 @@ ssh root@ip-address
 ```
 
 ### Postfix Configuration
-
 Enter postfix setup wizard:
 ```
 dpkg-reconfigure postfix
@@ -29,7 +28,7 @@ dpkg-reconfigure postfix
 3. Type the `Recipient for root and postmaster mail` you may leave this blank.
 4. Enter the `List of domains to receive mail for`
 ```
-MyWebSite.com, localhost.localdomain, , localhost
+localhost.localdomain, , localhost
 ```
 5. Select `Force synchronous updates` option, you can use the default.
 6. Enter `Local networks`, you can use defaults.
@@ -43,7 +42,6 @@ postconf -e 'home_mailbox= Maildir\'
 ```
 
 ### OpenDKIM Key Generation
-
 Install and enable opendkim:
 ```
 apt-get install opendkim opendkim-tools
@@ -63,9 +61,7 @@ chown -R opendkim:opendkim /etc/opendkim
 ```
 
 ### OpenDKIM Configuration
-
-Open a browser and login to Webmin
-
+Start by opening a web browser and logging into Webmin.  
 Open `/etc/opendkim.conf`  
 1. Comment out
 ```
@@ -134,3 +130,63 @@ Hello from my email server!
 
 ```
 Press `CTRL+D` to send the email.
+
+### Postfix Virtual Mailbox Configuration
+Create a directory to store virtual mailboxes along with a `user@example.com` mailbox directory:
+```
+mkdir -p /var/mail/vhosts/example.com/user
+```
+Replace ***example.com*** and ***user***
+
+Create a new user named `vmail` with a UID of `5000` and home directory set to `/var/mail/vhosts`:
+```
+useradd -u 5000 vmail -d /var/mail/vhosts
+```
+
+Add the `vmail` user to the `net-group` that we created in the [Apache Setup](Apache-Setup.md) part of this tutorial:
+```
+usermod -a -G net-group vmail
+```
+
+Change the group ownership of the `/var/mail/vhosts` directory and its subdirectories to `net-group`:
+```
+chown -R :net-group /var/mail/vhosts
+```
+
+Change the permissions of the `/var/mail/vhosts` directory and its subdirectories to allow group members to read, write & execute:
+```
+chmod -R 770 /var/mail/vhosts
+```
+
+Create a new `/etc/postfix/virtual_mailbox` file and add the following lines:
+```
+user@example.com    example.com/user/
+```
+In this example, mail for `user@example.com` goes to the mailbox at `/var/mail/vhosts/example.com/user/`.
+
+Create a new `` file and add the following lines:
+```
+user@example.com    user@example.com
+```
+
+Edit the Postfix configuration file `/etc/postfix/main.cf` and add the following lines:
+```
+virtual_mailbox_domains = example.com
+virtual_mailbox_base = /var/mail/vhosts
+virtual_mailbox_maps = hash:/etc/postfix/virtual_mailbox
+virtual_minimum_uid = 5000
+virtual_uid_maps = static:5000
+virtual_gid_maps = static:5000
+virtual_alias_maps = hash:/etc/postfix/virtual
+```
+
+![Alt Text](images/postfix/1.png)
+![Alt Text](images/postfix/2.png)
+![Alt Text](images/postfix/3.png)
+
+Update the virtual mailbox mapping files and reload the configuration:
+```
+postmap /etc/postfix/virtual
+postmap /etc/postfix/virtual_mailbox
+postfix reload
+```
