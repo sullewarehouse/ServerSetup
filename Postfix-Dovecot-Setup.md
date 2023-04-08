@@ -24,7 +24,7 @@ dpkg-reconfigure postfix
 ```
 
 1. Select `Internet Site`
-2. Enter your `System mail name`, this should match your rDNS PTR record.
+2. Enter your `System mail name`, this should match your Reverse DNS PTR record.
 3. Type the `Recipient for root and postmaster mail` you may leave this blank.
 4. Enter the `List of domains to receive mail for`
 ```
@@ -52,7 +52,7 @@ systemctl enable opendkim
 Create a opendkim directory and generate dkim keys for your site:
 ```
 mkdir /etc/opendkim
-opendkim-genkey -D /etc/opendkim/ --domain MyWebSite.com --selector mail
+opendkim-genkey -D /etc/opendkim/ --domain example.com --selector mail
 ```
 
 Set the owner of the opendkim directory to opendkim:
@@ -89,17 +89,17 @@ Create the `/etc/opendkim/TrustedHosts` file and add your domain to it, click on
 
 Create the `/etc/opendkim/KeyTable` file and add:
 ```
-mail._domainkey.MyWebSite.com MyWebSite.com:mail:/etc/opendkim/dkim.private
+mail._domainkey.example.com example.com:mail:/etc/opendkim/dkim.private
 ```
-Replace MyWebSite with your domain name and click the save icon.
+Replace `example` with your domain name and click the save icon.
 
 ![Alt Text](images/dkim/3.png)
 
 Create the `/etc/opendkim/SigningTable` file and add:
 ```
-*@MyWebSite.com mail._domainkey.MyWebSite.com
+*@example.com mail._domainkey.example.com
 ```
-Replace MyWebSite with your domain name and click the save icon.
+Replace `example` with your domain name and click the save icon.
 
 ![Alt Text](images/dkim/4.png)
 
@@ -111,25 +111,8 @@ Create a TXT DNS record that matches `/etc/opendkim/mail.txt`, the record is sep
 
 ![Alt Text](images/dkim/5.png)
 
-### Test Mail Server
-1. Use https://dmarcian.com/dkim-inspector/ to check your dkim records.
-
-2. use https://www.wormly.com/test-smtp-server to test your mail server.
-
-Go back to the terminal & install mailutils:
-
-```
-apt-get install mailutils
-```
-
-Send a test email using mailutils:
-```
-sendmail MyEmail@gmail.com
-Subject: Test
-Hello from my email server!
-
-```
-Press `CTRL+D` to send the email.
+You can test your DKIM DNS record using the following tools:
+1. https://dmarcian.com/dkim-inspector/
 
 ### Postfix Virtual Mailbox Configuration
 Create a directory to store virtual mailboxes along with a `user@example.com` mailbox directory:
@@ -164,7 +147,7 @@ user@example.com    example.com/user/
 ```
 In this example, mail for `user@example.com` goes to the mailbox at `/var/mail/vhosts/example.com/user/`.
 
-Create a new `` file and add the following lines:
+Create a new `/etc/postfix/virtual` file and add the following lines:
 ```
 user@example.com    user@example.com
 ```
@@ -184,9 +167,67 @@ virtual_alias_maps = hash:/etc/postfix/virtual
 ![Alt Text](images/postfix/2.png)
 ![Alt Text](images/postfix/3.png)
 
-Update the virtual mailbox mapping files and reload the configuration:
+Run the following commands to update the virtual mailbox mapping files and reload the configuration:
 ```
 postmap /etc/postfix/virtual
 postmap /etc/postfix/virtual_mailbox
 postfix reload
 ```
+
+### Dovecot Configuration
+Now we can configure Dovecot for remote login.
+
+Create a password file `/etc/dovecot/passwd` and add the following:
+```
+user:{PLAIN}password::::::
+```
+Replace `user` and `password` with your actual user and password.
+
+Open `/etc/dovecot/conf.d/10-auth.conf` and edit line 100 `auth_mechanisms` to be:
+```
+auth_mechanisms = plain login
+```
+
+Open `/etc/dovecot/conf.d/auth-system.conf.ext` and edit `passdb` and `userdb` to have the following configuration:
+```
+passdb {
+  driver = passwd-file
+  args = /etc/dovecot/passwd
+}
+
+userdb {
+  driver = passwd-file
+  args = /etc/dovecot/passwd
+  default_fields = uid=vmail gid=net-group
+}
+```
+
+Open `/etc/dovecot/conf.d/10-mail.conf` and edit line 30 to be:
+```
+mail_location = maildir:/var/mail/vhosts/example.com/%n
+```
+Replace `example.com` with your actual domain name.
+
+Restart Dovecot:
+```
+systemctl restart dovecot
+```
+
+### Test your Mail Server
+
+1. https://www.wormly.com/test-smtp-server
+
+In the terminal, install mailutils:
+
+```
+apt-get install mailutils
+```
+
+Send a test email using mailutils:
+```
+sendmail MyEmail@gmail.com
+Subject: Test
+Hello from my email server!
+
+```
+Press `CTRL+D` to send the email.
