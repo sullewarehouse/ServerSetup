@@ -245,6 +245,17 @@ service auth {
   }
 ```
 
+Open `/etc/dovecot/conf.d/10-ssl.conf` and set the SSL/TLS certificate files:
+```
+ssl = yes
+...
+...
+
+ssl_cert = </etc/webmin/letsencrypt-cert.pem
+ssl_key = </etc/webmin/letsencrypt-key.pem
+```
+**NOTE:** The letsencrypt certificate files were created in the [Apache Setup](Apache-Setup.md) part of this tutorial.
+
 Open `/etc/dovecot/conf.d/20-pop3.conf` and uncomment line 50, it should be:
 ```
 pop3_uidl_format = %08Xu%08Xv
