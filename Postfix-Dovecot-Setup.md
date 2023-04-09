@@ -152,7 +152,7 @@ Create a new `/etc/postfix/virtual` file and add the following lines:
 user@example.com    user@example.com
 ```
 
-Edit the Postfix configuration file `/etc/postfix/main.cf` and add the following lines:
+Open the Postfix configuration file `/etc/postfix/main.cf` and add the following lines:
 ```
 virtual_mailbox_domains = example.com
 virtual_mailbox_base = /var/mail/vhosts
@@ -161,6 +161,15 @@ virtual_minimum_uid = 5000
 virtual_uid_maps = static:5000
 virtual_gid_maps = static:5000
 virtual_alias_maps = hash:/etc/postfix/virtual
+
+smtpd_sasl_type = dovecot
+smtpd_sasl_path = private/auth
+smtpd_sasl_auth_enable = yes
+broken_sasl_auth_clients = yes
+smtpd_sasl_security_options = noanonymous noplaintext
+smtpd_sasl_tls_security_options = noanonymous
+smtpd_relay_restrictions = permit_mynetworks permit_sasl_authenticated defer_unauth_destination
+smtpd_tls_auth_only = yes
 ```
 
 ![Alt Text](images/postfix/1.png)
@@ -208,6 +217,25 @@ mail_location = maildir:/var/mail/vhosts/example.com/%n
 ```
 Replace `example.com` with your actual domain name.
 
+Open `/etc/dovecot/conf.d/10-master.conf`, find and edit `Postfix smtp-auth`:
+```
+service auth {
+  ...
+  ...
+
+  # Postfix smtp-auth
+  unix_listener /var/spool/postfix/private/auth {
+    mode = 0660
+    user = postfix
+    group = postfix
+  }
+```
+
+Open `/etc/dovecot/conf.d/20-pop3.conf` and uncomment line 50, it should be:
+```
+pop3_uidl_format = %08Xu%08Xv
+```
+
 Restart Dovecot:
 ```
 systemctl restart dovecot
@@ -225,9 +253,9 @@ apt-get install mailutils
 
 Send a test email using mailutils:
 ```
-sendmail MyEmail@gmail.com
-Subject: Test
-Hello from my email server!
+sendmail -f "FromUser@domain.com" ToUser@domain.com
+Subject: New email address
+Hello from my new email server!
 
 ```
 Press `CTRL+D` to send the email.
