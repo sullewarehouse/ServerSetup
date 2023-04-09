@@ -166,7 +166,7 @@ smtpd_tls_security_level = may
 ```
 **NOTE:** The letsencrypt certificate files were created in the [Apache Setup](Apache-Setup.md) part of this tutorial.
 
-Add the following lines to the file to the configuration file:
+Add the following lines to the configuration file:
 ```
 virtual_mailbox_domains = example.com
 virtual_mailbox_base = /var/mail/vhosts
