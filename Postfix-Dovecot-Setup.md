@@ -268,7 +268,10 @@ systemctl restart dovecot
 
 ### Test your Mail Server
 
-1. https://www.wormly.com/test-smtp-server
+1. [TLS Connection Test - checktls.com](https://checktls.com/TestReceiver)
+2. [SMTP Server Test - wormly.com](https://wormly.com/test-smtp-server)
+3. [SMTP Diagnostics - mxtoolbox.com](https://mxtoolbox.com/diagnostic.aspx)
+4. [Open Relay Attack Test - tools.appriver.com](https://tools.appriver.com/OpenRelay.aspx)
 
 In the terminal, install mailutils:
 
