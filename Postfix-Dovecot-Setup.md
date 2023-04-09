@@ -26,7 +26,8 @@ dpkg-reconfigure postfix
 1. Select `Internet Site`
 2. Enter your `System mail name`, this should match your Reverse DNS PTR record.
 3. Type the `Recipient for root and postmaster mail` you may leave this blank.
-4. Enter the `List of domains to receive mail for`
+4. Enter the `List of domains to receive mail for`  
+**NOTE: We are creating virtual domains, so do NOT add your domains here.**
 ```
 localhost.localdomain, , localhost
 ```
@@ -152,7 +153,20 @@ Create a new `/etc/postfix/virtual` file and add the following lines:
 user@example.com    user@example.com
 ```
 
-Open the Postfix configuration file `/etc/postfix/main.cf` and add the following lines:
+![Alt Text](images/postfix/1.png)
+![Alt Text](images/postfix/2.png)
+
+Open the Postfix configuration file `/etc/postfix/main.cf` and set the following SSL configuration:
+```
+# TLS parameters
+smtpd_tls_cert_file = /etc/webmin/letsencrypt-cert.pem
+smtpd_tls_key_file = /etc/webmin/letsencrypt-key.pem
+smtpd_tls_CAfile = /etc/webmin/letsencrypt-ca.pem
+smtpd_tls_security_level = may
+```
+**NOTE:** The letsencrypt certificate files were created in the [Apache Setup](Apache-Setup.md) part of this tutorial.
+
+Add the following lines to the file to the configuration file:
 ```
 virtual_mailbox_domains = example.com
 virtual_mailbox_base = /var/mail/vhosts
@@ -171,10 +185,10 @@ smtpd_sasl_tls_security_options = noanonymous
 smtpd_relay_restrictions = permit_mynetworks permit_sasl_authenticated defer_unauth_destination
 smtpd_tls_auth_only = yes
 ```
+**Click the save icon.**
 
-![Alt Text](images/postfix/1.png)
-![Alt Text](images/postfix/2.png)
 ![Alt Text](images/postfix/3.png)
+![Alt Text](images/postfix/4.png)
 
 Run the following commands to update the virtual mailbox mapping files and reload the configuration:
 ```
