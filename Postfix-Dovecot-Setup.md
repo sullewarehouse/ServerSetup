@@ -190,6 +190,25 @@ smtpd_tls_auth_only = yes
 ![Alt Text](images/postfix/3.png)
 ![Alt Text](images/postfix/4.png)
 
+Open the Postfix configuration file `/etc/postfix/master.cf` and uncomment the following configuration lines:
+```
+submission inet n       -       y       -       -       smtpd
+  -o syslog_name=postfix/submission
+  -o smtpd_tls_security_level=encrypt
+  -o smtpd_sasl_auth_enable=yes
+  -o smtpd_tls_auth_only=yes
+  -o smtpd_reject_unlisted_recipient=no
+  -o smtpd_client_restrictions=$mua_client_restrictions
+  -o smtpd_helo_restrictions=$mua_helo_restrictions
+  -o smtpd_sender_restrictions=$mua_sender_restrictions
+  -o smtpd_recipient_restrictions=
+  -o smtpd_relay_restrictions=permit_sasl_authenticated,reject
+  -o milter_macro_daemon_name=ORIGINATING
+```
+This lets Postfix use port 587 for mail submission.
+
+![Alt Text](images/postfix/5.png)
+
 Run the following commands to update the virtual mailbox mapping files and reload the configuration:
 ```
 postmap /etc/postfix/virtual
