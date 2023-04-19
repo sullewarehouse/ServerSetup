@@ -303,9 +303,9 @@ systemctl restart dovecot
 ### Test your Mail Server
 In the terminal check that all the services are running & active:
 ```
+systemctl status opendkim
 systemctl status postfix
 systemctl status dovecot
-systemctl status opendkim
 ```
 
 Online testing tools:
@@ -339,3 +339,9 @@ journalctl -f -u opendkim.service
 ```
 systemctl restart opendkim.service
 ```
+
+You can check for errors in postfix on Ubuntu using the following:
+```
+tail -f /var/log/mail.log
+```
+This command will display the last ten lines of the mail log file and then continuously update the display as new log entries are added.
