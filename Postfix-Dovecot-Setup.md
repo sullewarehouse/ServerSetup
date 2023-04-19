@@ -42,27 +42,15 @@ Set postfix to use the `Maildir` format instead of the `mbox` format:
 postconf -e 'home_mailbox= Maildir\'
 ```
 
-### OpenDKIM Key Generation
-Install and enable opendkim:
+### OpenDKIM Installation & Configuration
+Install and enable OpenDKIM:
 ```
 apt-get install opendkim opendkim-tools
 systemctl start opendkim
 systemctl enable opendkim
 ```
 
-Create a opendkim directory and generate dkim keys for your site:
-```
-mkdir /etc/opendkim
-opendkim-genkey -D /etc/opendkim/ --domain example.com --selector mail
-```
-
-Set the owner of the opendkim directory to opendkim:
-```
-chown -R opendkim:opendkim /etc/opendkim
-```
-
-### OpenDKIM Configuration
-Start by opening a web browser and logging into Webmin.  
+Open a web browser and login to Webmin.  
 Open `/etc/opendkim.conf`  
 1. Comment out
 ```
@@ -83,6 +71,11 @@ SignatureAlgorithm rsa-sha256
 Save the changes to `/etc/opendkim.conf`  
 
 ![Alt Text](images/dkim/1.png)
+
+Create the `/etc/opendkim` directory:
+```
+mkdir /etc/opendkim
+```
 
 Create the `/etc/opendkim/TrustedHosts` file and add:
 ```
@@ -110,7 +103,30 @@ Replace `example` with your domain name and click the save icon.
 
 ![Alt Text](images/dkim/4.png)
 
-**Restart the server.**
+Generate DKIM keys for your mail server:
+```
+opendkim-genkey -D /etc/opendkim/ --domain example.com --selector mail
+```
+
+Add the `opendkim` user to the `net-group` that we created in the [Apache Setup](Apache-Setup.md) part of this tutorial:
+```
+usermod -a -G net-group opendkim
+```
+
+Set the owner of the opendkim directory and files to opendkim and net-group:
+```
+chown -R opendkim:net-group /etc/opendkim
+```
+
+Set read, write, and execute permissions for `opendkim` user and `net-group` group.
+```
+chmod -R 770 /etc/opendkim
+```
+
+Restart OpenDKIM using:
+```
+systemctl restart opendkim
+```
 
 ### Configure DKIM DNS records
 
@@ -224,11 +240,11 @@ This lets Postfix use port 587 for mail submission.
 
 ![Alt Text](images/postfix/5.png)
 
-Run the following commands to update the virtual mailbox mapping files and reload the configuration:
+Run the following commands to update the virtual mailbox mapping files & restart Postfix:
 ```
 postmap /etc/postfix/virtual
 postmap /etc/postfix/virtual_mailbox
-postfix reload
+systemctl restart postfix
 ```
 
 ### Dovecot Configuration
@@ -330,7 +346,7 @@ Hello from my new email server!
 Press `CTRL+D` to send the email.
 
 ### Debugging
-If you have issues with setting up opendkim, it may help to debug it as the service runs.
+If you have issues with setting up OpenDKIM, it may help to debug it as the service runs.
 1. On terminal #1 do this, it will print logs from OpenDKIM as it runs:
 ```
 journalctl -f -u opendkim.service
@@ -340,7 +356,7 @@ journalctl -f -u opendkim.service
 systemctl restart opendkim.service
 ```
 
-You can check for errors in postfix on Ubuntu using the following:
+You can check for errors in Postfix on Ubuntu using the following:
 ```
 tail -f /var/log/mail.log
 ```
