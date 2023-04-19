@@ -70,21 +70,27 @@ Socket			local:/run/opendkim/opendkim.sock
 ```
 2. Uncomment
 ```
-Socket			inet:8891@localhost
+Socket			local:/var/spool/postfix/opendkim/opendkim.sock
 ```
 3. Append the following lines:
 ```
-ExternalIgnoreList refile:      /etc/opendkim/TrustedHosts
-InternalHosts refile:           /etc/opendkim/TrustedHosts
-KeyTable refile:                /etc/opendkim/KeyTable
-SigningTable refile:            /etc/opendkim/SigningTable
-SignatureAlgorithm              rsa-sha256
+ExternalIgnoreList refile:/etc/opendkim/TrustedHosts
+InternalHosts refile:/etc/opendkim/TrustedHosts
+KeyTable refile:/etc/opendkim/KeyTable
+SigningTable refile:/etc/opendkim/SigningTable
+SignatureAlgorithm rsa-sha256
 ```
 Save the changes to `/etc/opendkim.conf`  
 
 ![Alt Text](images/dkim/1.png)
 
-Create the `/etc/opendkim/TrustedHosts` file and add your domain to it, click on the save icon.
+Create the `/etc/opendkim/TrustedHosts` file and add:
+```
+127.0.0.1
+localhost
+example.com
+```
+Replace `example` with your domain name and click the save icon.
 
 ![Alt Text](images/dkim/2.png)
 
@@ -168,6 +174,7 @@ smtpd_tls_security_level = may
 
 Add the following lines to the configuration file:
 ```
+# Postfix virtual mailbox configuration
 virtual_mailbox_domains = example.com
 virtual_mailbox_base = /var/mail/vhosts
 virtual_mailbox_maps = hash:/etc/postfix/virtual_mailbox
@@ -176,14 +183,22 @@ virtual_uid_maps = static:5000
 virtual_gid_maps = static:5000
 virtual_alias_maps = hash:/etc/postfix/virtual
 
+# Postfix & Dovecot configuration
 smtpd_sasl_type = dovecot
 smtpd_sasl_path = private/auth
 smtpd_sasl_auth_enable = yes
 broken_sasl_auth_clients = yes
 smtpd_sasl_security_options = noanonymous noplaintext
 smtpd_sasl_tls_security_options = noanonymous
-smtpd_relay_restrictions = permit_mynetworks permit_sasl_authenticated defer_unauth_destination
+smtpd_relay_restrictions = permit_mynetworks permit_sasl_authenticated defer_unauth_destination permit_inet_interfaces
 smtpd_tls_auth_only = yes
+smtpd_recipient_restrictions = permit_mynetworks permit_sasl_authenticated permit_inet_interfaces
+
+# Postfix configuration with opendkim
+smtpd_milters = unix:/var/spool/postfix/opendkim/opendkim.sock
+non_smtpd_milters = $smtpd_milters
+milter_default_action = accept
+milter_protocol = 6
 ```
 **Click the save icon.**
 
@@ -286,7 +301,14 @@ systemctl restart dovecot
 ```
 
 ### Test your Mail Server
+In the terminal check that all the services are running & active:
+```
+systemctl status postfix
+systemctl status dovecot
+systemctl status opendkim
+```
 
+Online testing tools:
 1. [TLS Connection Test - checktls.com](https://checktls.com/TestReceiver)
 2. [SMTP Server Test - wormly.com](https://wormly.com/test-smtp-server)
 3. [SMTP Diagnostics - mxtoolbox.com](https://mxtoolbox.com/diagnostic.aspx)
@@ -306,3 +328,14 @@ Hello from my new email server!
 
 ```
 Press `CTRL+D` to send the email.
+
+### Debugging
+If you have issues with setting up opendkim, it may help to debug it as the service runs.
+1. On terminal #1 do this, it will print logs from OpenDKIM as it runs:
+```
+journalctl -f -u opendkim.service
+```
+2. On a second terminal do this to restart OpenDKIM:
+```
+systemctl restart opendkim.service
+```
